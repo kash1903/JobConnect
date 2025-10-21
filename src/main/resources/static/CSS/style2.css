@@ -1,0 +1,395 @@
+
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        background-color: #f4f4f4;
+    }
+
+    nav {
+        background-color: #333;
+        color: white;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    nav span {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    nav a {
+        color: white;
+        margin-left: 15px;
+        text-decoration: none;
+    }
+
+    nav a:hover {
+        text-decoration: underline;
+    }
+
+    .dashboard {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 30px;
+        padding: 30px;
+    }
+
+    /* Left: Post Job */
+    .post-section {
+        flex: 1;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-section h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .post-section form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input, textarea {
+        margin: 8px 0;
+        padding: 10px;
+        width: 90%;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    textarea {
+        height: 80px;
+        resize: none;
+    }
+
+    button {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 6px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    /* Right: Jobs Posted */
+    .jobs-section {
+        flex: 2;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    .jobs-section h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .job-card {
+        background: #fafafa;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        margin: 15px 0;
+        padding: 15px 20px;
+    }
+
+    .job-card h3 {
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .job-card p {
+        margin: 5px 0;
+        color: #555;
+    }
+
+    .job-card button {
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+
+    /* Modal Styling */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 10;
+    }
+
+    .modal-content {
+        background: white;
+        margin: 8% auto;
+        padding: 25px;
+        border-radius: 10px;
+        width: 60%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        position: relative;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        color: #dc3545;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    #applicantList p {
+        margin: 5px 0;
+    }
+
+    #applicantList button {
+        margin-right: 8px;
+        margin-top: 5px;
+    }
+
+    .welcome {
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    .welcome h2 {
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .welcome p {
+        color: #666;
+        margin-top: 0;
+    }
+     /* Modal styling */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-content button {
+            width: 48%;
+            padding: 8px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            float: right;
+        }
+        /* ========================== */
+/* Media Queries - Employer Dashboard */
+/* ========================== */
+
+/* Small devices (phones, <576px) */
+@media (max-width: 576px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 15px;
+    }
+
+    nav span {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    nav a {
+        font-size: 14px;
+        margin: 5px 10px 0 0;
+    }
+
+    .dashboard {
+        flex-direction: column;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .post-section, .jobs-section {
+        width: 100%;
+        flex: 1 1 100%;
+        padding: 15px;
+    }
+
+    input, textarea, button {
+        width: 100%;
+        margin: 6px 0;
+        font-size: 14px;
+    }
+
+    .job-card {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .modal-content {
+        width: 90%;
+        margin: 15% auto;
+        padding: 15px;
+    }
+
+    .modal-content input, .modal-content textarea, .modal-content button {
+        width: 100%;
+        margin: 6px 0;
+    }
+
+    #applicantList button {
+        width: 48%;
+        margin: 5px 1%;
+    }
+}
+
+/* Medium devices (tablets, 577px - 992px) */
+@media (min-width: 577px) and (max-width: 992px) {
+    .dashboard {
+        flex-direction: column;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .post-section, .jobs-section {
+        width: 100%;
+    }
+
+    input, textarea, button {
+        width: 95%;
+        font-size: 15px;
+    }
+
+    .job-card {
+        padding: 15px;
+    }
+
+    .modal-content {
+        width: 70%;
+        margin: 12% auto;
+        padding: 20px;
+    }
+
+    #applicantList button {
+        width: 48%;
+        margin: 5px 1%;
+    }
+}
+
+/* Large devices (desktops, ≥993px) */
+@media (min-width: 993px) {
+    .dashboard {
+        flex-direction: row;
+        gap: 30px;
+        padding: 30px;
+    }
+
+    .post-section {
+        flex: 1;
+    }
+
+    .jobs-section {
+        flex: 2;
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    input, textarea, button {
+        width: 90%;
+        font-size: 14px;
+    }
+
+    .job-card {
+        padding: 15px 20px;
+    }
+
+    .modal-content {
+        width: 60%;
+        margin: 8% auto;
+        padding: 25px;
+    }
+
+    #applicantList button {
+        width: auto;
+        margin-right: 8px;
+    }
+}
+
+/* Extra-large screens (>1200px) */
+@media (min-width: 1200px) {
+    .dashboard {
+        gap: 40px;
+        padding: 40px;
+    }
+
+    .post-section {
+        padding: 30px;
+    }
+
+    .jobs-section {
+        padding: 30px;
+    }
+
+    .job-card {
+        padding: 20px 25px;
+    }
+
+    .modal-content {
+        width: 50%;
+        padding: 30px;
+    }
+}
+
+

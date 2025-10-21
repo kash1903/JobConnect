@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard - JobConnect</title>
+    <!-- <link rel="stylesheet" href="style1.css"> -->
+     <link rel="stylesheet" th:href="@{/CSS/style1.css}">
+
+<body>
+    <nav>
+        <span>💼 JobConnect  [🤵 Employer Dashboard ]</span>
+        <div>
+            <!-- <a href="/">Home</a> -->
+            <!-- <a href="/logout">Logout</a> -->
+             <a href="/logout" class="btn-logout" aria-label="Logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="welcome">
+        <h2>Welcome, <span th:text="${userName}">Employer</span>!</h2>
+        <p>Email: <span th:text="${userEmail}">employer@example.com</span></p>
+    </div>
+
+        
+    <!-- search bar  -->
+    <!-- <div class="search-bar">
+                <input type="text" id="keyword" placeholder="Search by Job Title">
+                <input type="text" id="searchLocation" placeholder="Search by Location">
+                <button onclick="searchJobs()">Search</button>
+                <button onclick="loadEmployerJobs()">Show All</button>
+            </div> -->
+
+            <!-- 🔍 Search Bar -->
+<div class="search-bar">
+  <input type="text" id="keyword" placeholder="Search by Job Title (e.g., Java)">
+  <button onclick="searchJobs()">Search</button>
+  <button onclick="loadEmployerJobs()">Show All</button>
+</div>
+
+
+    <div class="dashboard">
+        <!-- Left Section: Post a Job -->
+        <div class="post-section">
+            <h3>📝 Post a New Job</h3>
+            <form id="jobForm" onsubmit="postJob(event)">
+                <input type="text" id="title" placeholder="Job Title" required><br>
+                <textarea id="description" placeholder="Job Description" required></textarea><br>
+                <input type="text" id="location" placeholder="Location" required><br>
+                <input type="number" id="salary" placeholder="Salary" required><br>
+                <input type="date" id="deadline" required><br>
+                <button type="submit">Post Job</button>
+            </form>
+        </div>
+
+        <!-- Right Section: Posted Jobs -->
+        <div class="jobs-section">
+            <h3>📋 Your Posted Jobs</h3>
+            <div id="jobList"></div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Applicants -->
+    <div id="applicantModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3>Applicants for this Job</h3>
+            <div id="applicantList"></div>
+        </div>
+    </div>
+
+    <!-- Model for Editing -->
+
+     <!-- Edit Job Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeEditModal()">&times;</span>
+        <h3>Edit Job</h3>
+        <input type="text" id="editTitle" placeholder="Job Title">
+        <textarea id="editDescription" placeholder="Job Description"></textarea>
+        <input type="text" id="editLocation" placeholder="Location">
+        <input type="number" id="editSalary" placeholder="Salary">
+        <input type="date" id="editDeadline">
+        <div style="text-align:center;">
+            <button class="btn-submit" onclick="submitEdit()">Save</button>
+            <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+
+<script th:inline="javascript">
+
+
+
+
+/*<![CDATA[*/
+const employerId = /*[[${userId}]]*/ 0;
+/*]]>*/
+
+async function postJob(event) {
+    event.preventDefault();
+    const job = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        location: document.getElementById("location").value,
+        salary: parseFloat(document.getElementById("salary").value),
+        deadline: document.getElementById("deadline").value,
+        employerId: employerId
+    };
+
+    const res = await fetch("/api/jobs/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(job)
+    });
+
+    if (res.ok) {
+        alert("Job posted successfully!");
+        loadEmployerJobs();
+        document.getElementById("jobForm").reset();
+    } else {
+        alert("Error posting job.");
+    }
+}
+
+// New code 
+function formatDescription(desc) {
+    if (!desc) return '';
+    // Escape HTML
+    let escaped = desc
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    // Check if lines start with "- " and convert to <li>
+    const lines = escaped.split('\n');
+    const hasBullet = lines.some(line => line.startsWith("- "));
+    if (hasBullet) {
+        const items = lines.map(line => {
+            if (line.startsWith("- ")) return `<li>${line.slice(2)}</li>`;
+            return line;
+        });
+        return `<ul>${items.join('')}</ul>`;
+    }
+
+    // Otherwise, just convert newlines to <br>
+    return escaped.replace(/\n/g, '<br>');
+}
+
+// New code 
+
+// Changed here 
+// <p>${job.description}</p>
+
+async function loadEmployerJobs() {
+    const res = await fetch(`/api/jobs/employer/${employerId}`);
+    const jobs = await res.json();
+    const jobList = document.getElementById("jobList");
+    jobList.innerHTML = "";
+
+    if (jobs.length === 0) {
+        jobList.innerHTML = "<p>No jobs posted yet.</p>";
+        return;
+    }
+     
+    // <button onclick="editJob(${job.id})">Edit</button>
+    jobs.forEach(job => {
+        const div = document.createElement("div");
+        div.classList.add("job-card");
+        div.innerHTML = `
+            <h3>${job.title}</h3>
+            <p>${formatDescription(job.description)}</p>
+            <p><b>Location:</b> ${job.location}</p>
+            <p><b>Salary:</b> ₹${job.salary}</p>
+            <p><b>Deadline:</b> ${job.deadline}</p>
+            <button onclick="viewApplicants(${job.id})">View Applicants</button>
+            
+            <button onclick='openEditModal(${JSON.stringify(job)})'>Edit</button>
+            <button onclick="deleteJob(${job.id})">Delete</button>
+        `;
+        jobList.appendChild(div);
+    });
+}
+
+async function deleteJob(jobId) {
+    if (confirm("Delete this job?")) {
+        const res = await fetch(`/api/jobs/delete/${jobId}`, { method: "DELETE" });
+        if (res.ok) {
+            alert("Job deleted!");
+            loadEmployerJobs();
+        } else {
+            alert("Error deleting job.");
+        }
+    }
+}
+
+async function viewApplicants(jobId) {
+    const res = await fetch(`/api/applications/job/${jobId}`);
+    const applicants = await res.json();
+    const container = document.getElementById("applicantList");
+    container.innerHTML = "";
+
+    if (applicants.length === 0) {
+        container.innerHTML = "<p>No applicants yet.</p>";
+    } else {
+        applicants.forEach(a => {
+            const div = document.createElement("div");
+            div.innerHTML = `
+                <p><b>${a.name}</b> (${a.email}) - ${a.contactNumber}</p>
+                <p>Status: ${a.status}</p>
+                <button onclick="updateStatus(${a.id}, 'Shortlisted')">Shortlist</button>
+                <button onclick="updateStatus(${a.id}, 'Rejected')">Reject</button>
+                <hr>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    document.getElementById("applicantModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("applicantModal").style.display = "none";
+}
+
+async function updateStatus(appId, status) {
+    const res = await fetch(`/api/applications/${appId}/status?status=${status}`, { method: "PUT" });
+    if (res.ok) {
+        alert(`Applicant ${status}!`);
+        document.getElementById("applicantModal").style.display = "none";
+    } else {
+        alert("Error updating status.");
+    }
+}
+
+// search function using keyword
+// async function searchJobs() {
+//     const keyword = document.getElementById("keyword").value;
+//     const location = document.getElementById("searchLocation").value;
+//     let url = '/api/jobs/search?';
+//     if (keyword) url += `keyword=${encodeURIComponent(keyword)}`;
+//     if (location) url += `${keyword ? '&' : ''}location=${encodeURIComponent(location)}`;
+
+//     try {
+//         const response = await fetch(url);
+//         const jobs = await response.json();
+//         displayJobs(jobs);
+//     } catch (err) {
+//         console.error("searchJobs error:", err);
+//     }
+// }
+// search function using keyword
+
+// 🔍 Search jobs by keyword
+async function searchJobs() {
+  const keyword = document.getElementById("keyword").value.trim();
+  const jobList = document.getElementById("jobList");
+  jobList.innerHTML = "<p>Loading...</p>";
+
+  // If empty, show all jobs
+  if (!keyword) {
+    loadEmployerJobs();
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8081/api/jobs/search?keyword=${encodeURIComponent(keyword)}`);
+    if (!response.ok) {
+      jobList.innerHTML = "<p>⚠️ Error fetching jobs.</p>";
+      return;
+    }
+
+    const jobs = await response.json();
+
+    if (jobs.length === 0) {
+      jobList.innerHTML = `<p>No jobs found for keyword: <b>${keyword}</b></p>`;
+      return;
+    }
+
+    // ✅ Display results
+    jobList.innerHTML = "";
+    jobs.forEach(job => {
+      const div = document.createElement("div");
+      div.classList.add("job-card");
+      div.innerHTML = `
+        <h3>${job.title}</h3>
+        <p>${formatDescription(job.description)}</p>
+        <p><b>Location:</b> ${job.location}</p>
+        <p><b>Salary:</b> ₹${job.salary}</p>
+        <p><b>Deadline:</b> ${job.deadline}</p>
+        <button onclick="viewApplicants(${job.id})">View Applicants</button>
+        <button onclick='openEditModal(${JSON.stringify(job)})'>Edit</button>
+        <button onclick="deleteJob(${job.id})">Delete</button>
+      `;
+      jobList.appendChild(div);
+    });
+  } catch (err) {
+    console.error("searchJobs error:", err);
+    jobList.innerHTML = "<p>❌ Failed to load jobs.</p>";
+  }
+}
+
+
+// Model Edit 
+let editingJobId = null;
+
+function openEditModal(job) {
+    editingJobId = job.id;
+    document.getElementById("editTitle").value = job.title;
+    document.getElementById("editDescription").value = job.description;
+    document.getElementById("editLocation").value = job.location;
+    document.getElementById("editSalary").value = job.salary;
+    document.getElementById("editDeadline").value = job.deadline;
+    document.getElementById("editModal").style.display = "block";
+}
+
+function closeEditModal() {
+    document.getElementById("editModal").style.display = "none";
+    editingJobId = null;
+}
+
+async function submitEdit() {
+    if (!editingJobId) return;
+
+    const job = {
+        title: document.getElementById("editTitle").value,
+        description: document.getElementById("editDescription").value,
+        location: document.getElementById("editLocation").value,
+        salary: parseFloat(document.getElementById("editSalary").value),
+        deadline: document.getElementById("editDeadline").value,
+        employerId: employerId
+    };
+
+    const res = await fetch(`/api/jobs/edit/${editingJobId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(job)
+    });
+
+    if (res.ok) {
+        alert("Job updated successfully!");
+        loadEmployerJobs();
+        closeEditModal();
+    } else {
+        alert("Error updating job.");
+    }
+}
+
+// Model Edit 
+
+
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "/login.html";
+}
+
+
+window.onload = loadEmployerJobs;
+</script>
+</body>
+</html>
+

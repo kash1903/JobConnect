@@ -1,0 +1,410 @@
+ 
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            background-color: #f4f6f8;
+        }
+
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Left section - Job listings */
+        .jobs-section {
+            flex: 3;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        .job-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .job-card {
+            background-color: white;
+            width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            margin: 15px 0;
+            padding: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .job-card h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .job-card p {
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .job-card button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .job-card button:hover {
+            background-color: #218838;
+        }
+
+        /* Right section - Application status */
+        .status-section {
+            flex: 1.2;
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .status-section h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .status-list li {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 6px solid #007bff;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            transition: 0.2s ease;
+        }
+
+        .status-list li:hover {
+            transform: translateX(5px);
+        }
+
+   
+        .status-applied { border-left-color: #007bff !important; }
+        .status-pending { border-left-color: #ffc107 !important; }
+        .status-Shortlisted { border-left-color: #28a745 !important; }
+        .status-rejected { border-left-color: #dc3545 !important; }
+
+
+
+        /* Modal styling */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            text-align: center;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .modal-content button {
+            width: 48%;
+            padding: 8px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            float: right;
+        }
+
+        /* Professional button-like styling for a logout link */
+.btn-logout {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(180deg, #e34f4f 0%, #d03838 100%); /* subtle red gradient */
+  border: 0;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(208, 49, 49, 0.18);
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  cursor: pointer;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hover / focus states */
+.btn-logout:hover,
+.btn-logout:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(208, 49, 49, 0.22);
+  filter: brightness(1.03);
+  outline: none;
+}
+
+/* Strong focus ring for keyboard users */
+.btn-logout:focus-visible {
+  box-shadow: 0 0 0 4px rgba(208, 49, 49, 0.16), 0 10px 24px rgba(208, 49, 49, 0.22);
+}
+
+/* Active / pressed state */
+.btn-logout:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+  filter: brightness(0.98);
+}
+
+/* Small / compact variant (optional) */
+.btn-logout.small {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn-logout {
+    transition: none;
+  }
+}
+
+/* Dark-background variant (optional) */
+.btn-logout.dark {
+  background: linear-gradient(180deg, #444 0%, #222 100%);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+        /* media querries  */
+        /* Media Queries for Job Seeker Dashboard */
+
+/* Small devices (phones, portrait) */
+@media (max-width: 576px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 15px;
+    }
+
+    nav span {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    nav a {
+        font-size: 14px;
+        margin: 5px 10px 0 0;
+    }
+
+    .dashboard {
+        flex-direction: column;
+        padding: 10px;
+        gap: 15px;
+    }
+
+    .jobs-section, .status-section {
+        flex: 1 1 100%;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .search-bar button {
+        width: 48%;
+        margin: 5px 1%;
+        padding: 8px 0;
+    }
+
+    .job-card {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+        padding: 15px;
+    }
+
+    .modal-content input {
+        padding: 6px;
+    }
+
+    .modal-content button {
+        width: 48%;
+        padding: 6px;
+    }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 577px) and (max-width: 992px) {
+    .dashboard {
+        flex-direction: column;
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .jobs-section, .status-section {
+        width: 100%;
+        flex: 1 1 auto;
+    }
+
+    .search-bar input {
+        width: 45%;
+        margin: 5px 2.5%;
+    }
+
+    .search-bar button {
+        width: 48%;
+        margin: 5px 1%;
+    }
+
+    .job-card {
+        width: 95%;
+        padding: 18px;
+    }
+
+    .modal-content {
+        width: 350px;
+        margin: 15% auto;
+        padding: 18px;
+    }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 993px) {
+    .dashboard {
+        flex-direction: row;
+    }
+
+    .jobs-section {
+        flex: 3;
+    }
+
+    .status-section {
+        flex: 1.2;
+    }
+
+    .search-bar input {
+        width: 200px;
+        margin: 5px;
+    }
+
+    .search-bar button {
+        width: auto;
+        margin: 5px;
+    }
+
+    .job-card {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .modal-content {
+        width: 300px;
+        margin: 10% auto;
+        padding: 20px;
+    }
+}
+
+  

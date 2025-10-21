@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav span {
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #00bcd4;
+        }
+
+        .hero {
+            background: url('/images/job1.png') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            background-blend-mode: darken;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 20px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 50px auto;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-content h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .card-content p {
+            color: #666;
+            font-size: 15px;
+        }
+
+            /* Quotes Section */
+        .quote-section {
+            text-align: center;
+            margin: 40px auto;
+            padding: 20px;
+            font-size: 20px;
+            color: #333;
+            width: 80%;
+            max-width: 800px;
+            transition: opacity 1s ease-in-out;
+            font-style: italic;
+        }
+
+        .quote-author {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        /* media querries  */
+        /* Media Queries for Responsiveness */
+
+/* Small devices (phones, portrait) */
+@media (max-width: 576px) {
+    .hero {
+        padding: 60px 15px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    nav span {
+        font-size: 20px;
+    }
+
+    nav a {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .cards {
+        gap: 15px;
+        margin: 30px 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 90%;
+    }
+
+    .card-content h3 {
+        font-size: 18px;
+    }
+
+    .card-content p {
+        font-size: 14px;
+    }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 577px) and (max-width: 992px) {
+    .hero {
+        padding: 80px 20px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .cards {
+        gap: 20px;
+        margin: 40px 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        width: 45%;
+    }
+
+    .card-content h3 {
+        font-size: 20px;
+    }
+
+    .card-content p {
+        font-size: 15px;
+    }
+}
+
+/* Large devices (desktops) */
+@media (min-width: 993px) {
+    .cards {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .card {
+        width: 300px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <span>💼 JobConnect</span>
+        <div>
+            <a href="/register">Register</a>
+            <a href="/login">Login</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <h1>Welcome to JobConnect 🚀</h1>
+        <p>Your platform to connect employers and job seekers.</p>
+    </div>
+
+
+           <!-- Rotating Quotes Section -->
+    <div class="quote-section" id="quoteDisplay">
+        “Choose a job you love, and you will never have to work a day in your life.” — Confucius
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <img src="/images/job2.jpg" alt="Job Opportunities">
+            <div class="card-content">
+                <h3>Find Your Dream Job</h3>
+                <p>Search from thousands of openings and start your career today!</p>
+            </div>
+        </div>
+
+   
+
+        <div class="card">
+            <img src="/images/job3.png" alt="Post Job">
+            <div class="card-content">
+                <h3>Post Jobs Easily</h3>
+                <p>Employers can post job openings and hire talented candidates.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="/images/job1.png" alt="Career Growth">
+            <div class="card-content">
+                <h3>Grow with Us</h3>
+                <p>Join JobConnect and take your professional journey to new heights!</p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${message}" style="text-align:center; margin-top:20px; color:green;">
+        <p th:text="${message}"></p>
+    </div>
+
+    
+
+    
+<script src="/js/quotes.js"></script>
+
+
+</body>
+</html>

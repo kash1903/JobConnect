@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Job Seeker Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/CSS/jobseeker.css}">
+    
+</head>
+
+<body>
+    <nav>
+        <span>💼 JobConnect [ 📝 Job Seeker ]</span>
+        <div>
+            <!-- <a href="/" >Home</a> -->
+            <!-- <a href="/logout" >Logout</a> -->
+             <a href="/logout" class="btn-logout" aria-label="Logout">Logout</a>
+
+        </div>
+       </nav>
+
+    <div style="text-align:center; margin:20px;">
+        <h3>Welcome, <span th:text="${userName}">User Name</span>!</h3>
+        <p>Email: <span th:text="${userEmail}">user@example.com</span></p>
+    </div>
+
+    <div class="dashboard">
+        <!-- Left Section -->
+        <div class="jobs-section">
+            <div class="search-bar">
+                <input type="text" id="keyword" placeholder="Search by Job Title">
+                <input type="text" id="location" placeholder="Search by Location">
+                <button onclick="searchJobs()">Search</button>
+                <button onclick="loadAllJobs()">Show All</button>
+            </div>
+
+            <div id="jobContainer" class="job-container"></div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="status-section">
+            <h2>Your Application Status</h2>
+            <ul id="statusList" class="status-list"></ul>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+            <h3>Apply for Job</h3>
+            <input type="text" id="modalName" placeholder="Full Name">
+            <input type="email" id="modalEmail" placeholder="Email">
+            <input type="text" id="modalContact" placeholder="Contact Number">
+            <div style="text-align:center;">
+                <button class="btn-submit" onclick="submitApplication()">Submit</button>
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+/*<![CDATA[*/
+const userId = /*[[${userId}]]*/ 0;
+const userName = '[[${userName}]]';
+const userEmail = '[[${userEmail}]]';
+/*]]>*/
+
+let currentJobId = null;
+
+async function loadAllJobs() {
+    try {
+        const response = await fetch('/api/jobs/all');
+        const jobs = await response.json();
+        displayJobs(jobs);
+    } catch (err) {
+        console.error("loadAllJobs error:", err);
+    }
+}
+
+async function searchJobs() {
+    const keyword = document.getElementById("keyword").value;
+    const location = document.getElementById("location").value;
+    let url = '/api/jobs/search?';
+    if (keyword) url += `keyword=${encodeURIComponent(keyword)}`;
+    if (location) url += `${keyword ? '&' : ''}location=${encodeURIComponent(location)}`;
+
+    try {
+        const response = await fetch(url);
+        const jobs = await response.json();
+        displayJobs(jobs);
+    } catch (err) {
+        console.error("searchJobs error:", err);
+    }
+}
+
+
+//   new code 
+// ✅ Format description to support points
+function formatDescription(desc) {
+    if (!desc) return '';
+    let escaped = desc
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const lines = escaped.split('\n');
+    const hasBullet = lines.some(line => line.startsWith("- "));
+    if (hasBullet) {
+        const items = lines.map(line => {
+            if (line.startsWith("- ")) return `<li>${line.slice(2)}</li>`;
+            return line;
+        });
+        return `<ul>${items.join('')}</ul>`;
+    }
+    return escaped.replace(/\n/g, '<br>');
+}
+  // new code 
+//  <p>${escapeHtml(job.description)}</p>
+function displayJobs(jobs) {
+    const container = document.getElementById("jobContainer");
+    container.innerHTML = "";
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>No jobs found.</p>";
+        return;
+    }
+
+    jobs.forEach(job => {
+        const card = document.createElement("div");
+        card.classList.add("job-card");
+        card.innerHTML = `
+            <h3>${escapeHtml(job.title)}</h3>
+           <p>${formatDescription(job.description)}</p>
+            <p><b>Location:</b> ${escapeHtml(job.location)}</p>
+            <p><b>Salary:</b> ₹${job.salary}</p>
+            <p><b>Deadline:</b> ${escapeHtml(job.deadline)}</p>
+            <button onclick="openModal(${job.id})">Apply</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function escapeHtml(s) {
+    if (!s && s !== 0) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/* ✅ MODAL HANDLERS */
+function openModal(jobId) {
+    currentJobId = jobId;
+    document.getElementById('modalName').value = userName || '';
+    document.getElementById('modalEmail').value = userEmail || '';
+    document.getElementById('modalContact').value = '';
+    document.getElementById('applyModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('applyModal').style.display = 'none';
+}
+
+async function submitApplication() {
+    const name = document.getElementById('modalName').value.trim();
+    const email = document.getElementById('modalEmail').value.trim();
+    const contact = document.getElementById('modalContact').value.trim();
+
+    if (!name || !email || !contact) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const payload = {
+        jobId: currentJobId,
+        userId: userId,
+        name: name,
+        email: email,
+        contactNumber: contact
+    };
+
+    try {
+        const response = await fetch('/api/applications/apply', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            closeModal();
+            alert("Successfully applied for job!");
+            await loadApplicationStatus();
+        } else {
+            const errText = await response.text();
+            alert("Error applying for job: " + errText);
+        }
+    } catch (err) {
+        console.error("applyJob error:", err);
+        alert("Error applying for job. See console.");
+    }
+}
+
+
+async function loadApplicationStatus() {
+    if (!userId || userId === 0) {
+        document.getElementById("statusList").innerHTML = "<li>Please log in to see your applications.</li>";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/applications/user/${userId}/status`);
+        const list = document.getElementById("statusList");
+        if (!response.ok) {
+            list.innerHTML = "<li>Error loading status</li>";
+            return;
+        }
+        const statuses = await response.json();
+        list.innerHTML = "";
+        if (!Array.isArray(statuses) || statuses.length === 0) {
+            list.innerHTML = "<li>No applications yet.</li>";
+            return;
+        }
+
+        statuses.forEach(status => {
+            const li = document.createElement("li");
+            li.textContent = status;
+
+            // ✅ Add color class based on status text
+            const statusLower = status.toLowerCase();
+            if (statusLower.includes("applied")) li.classList.add("status-applied");
+            else if (statusLower.includes("pending")) li.classList.add("status-pending");
+            else if (statusLower.includes("Shortlisted")) li.classList.add("status-Shortlisted");
+            else if (statusLower.includes("rejected")) li.classList.add("status-rejected");
+
+            list.appendChild(li);
+        });
+    } catch (err) {
+        console.error("loadApplicationStatus error:", err);
+        document.getElementById("statusList").innerHTML = "<li>Error loading status</li>";
+    }
+}
+
+
+
+function logout() {
+  localStorage.removeItem("user");
+  window.location.href = "/login.html";
+}
+
+
+window.onload = () => {
+    loadAllJobs();
+    loadApplicationStatus();
+};
+</script>
+</body>
+</html>
