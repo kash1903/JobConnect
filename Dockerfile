@@ -22,10 +22,11 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Expose port your Spring Boot app runs on
-EXPOSE 8081
+EXPOSE $PORT
 
 # Set environment variables for Spring Boot
 ENV JAVA_OPTS=""
 
 # Run the Spring Boot app
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar target/jobConnect-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar target/jobConnect-0.0.1-SNAPSHOT.jar"]
+
