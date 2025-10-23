@@ -1,26 +1,31 @@
-# Run this project with java 21
+# Use OpenJDK 17 as base image
+FROM eclipse-temurin:17-jdk-jammy
 
-# ---------- Stage 1: Build ----------
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy pom.xml and download dependencies (cached)
+# Copy Maven wrapper and pom.xml first for caching dependencies
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
-RUN mvn dependency:go-offline
 
-# Copy the rest of the source code and build the JAR
+# Make mvnw executable
+RUN chmod +x mvnw
+
+# Download dependencies (this helps speed up subsequent builds)
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the entire project
 COPY src ./src
-RUN mvn clean package -DskipTests
 
-# ---------- Stage 2: Run ----------
-FROM openjdk:21-jdk-slim
-WORKDIR /app
+# Package the Spring Boot application
+RUN ./mvnw clean package -DskipTests
 
-# Copy only the built JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Expose port your Spring Boot app runs on
+EXPOSE $PORT
 
-# Expose Render's port
-EXPOSE 8080
+# Set environment variables for Spring Boot
+ENV JAVA_OPTS=""
 
-# Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the Spring Boot app
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar target/jobConnect-0.0.1-SNAPSHOT.jar"]
