@@ -31,7 +31,8 @@ public class LandingController {
             @RequestParam String password,
             @RequestParam String role,
             Model model) {
-        String apiUrl = "http://localhost:8080/api/users/register";
+        // String apiUrl = "http://localhost:8080/api/users/register";
+        String apiUrl = "https://jobconnect-2gk2.onrender.com/register";
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> requestBody = new HashMap<>();
@@ -68,7 +69,8 @@ public class LandingController {
             @RequestParam String password,
             HttpSession session) {
 
-        String apiUrl = "http://localhost:8080/api/users/login";
+        // String apiUrl = "http://localhost:8080/api/users/login";
+           String apiUrl = "https://jobconnect-2gk2.onrender.com/login";
         RestTemplate restTemplate = new RestTemplate();
 
         // Prepare request body
