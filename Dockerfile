@@ -30,3 +30,4 @@ ENV JAVA_OPTS=""
 # Run the Spring Boot app
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=$PORT -jar target/jobConnect-0.0.1-SNAPSHOT.jar"]
 
+
