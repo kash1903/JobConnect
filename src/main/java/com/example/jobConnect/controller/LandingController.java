@@ -33,7 +33,8 @@ public class LandingController {
             Model model) {
         // String apiUrl = "http://localhost:8080/api/users/register";
         // String apiUrl = "https://jobconnect-2gk2.onrender.com/register";
-        String apiUrl = "https://jobconnect-api.onrender.com/api/users/register";
+        // String apiUrl = "https://jobconnect-api.onrender.com/api/users/register";
+        String apiUrl = "https://jobconnect-2gk2.onrender.com/api/users/register";
 
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> requestBody = new HashMap<>();
@@ -72,7 +73,8 @@ public class LandingController {
 
         // String apiUrl = "http://localhost:8080/api/users/login";
         //    String apiUrl = "https://jobconnect-2gk2.onrender.com/login";
-           String apiUrl = "https://jobconnect-api.onrender.com/api/users/login";
+        // String apiUrl = "https://jobconnect-api.onrender.com/api/users/login";
+           String apiUrl = "https://jobconnect-2gk2.onrender.com/api/users/login";
         RestTemplate restTemplate = new RestTemplate();
 
         // Prepare request body
